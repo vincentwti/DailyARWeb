@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "mind-ar": "^1.2.5",
+    "three": "^0.161.0"
+  },
+  "devDependencies": {
+    "vite": "^5.1.3"
+  }
+}
