@@ -6,7 +6,7 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 const loader = new THREE.TextureLoader();
 let isPaused = false;
 const targetInitialPos = new THREE.Vector3(-2, 0, 0);
-const targetSpeed = 0.1;
+const targetSpeed = 0.2;
 const fps = 30;
 
 camera.position.set(0, 0, 2);
