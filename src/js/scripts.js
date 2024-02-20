@@ -52,7 +52,7 @@ window.addEventListener('resize', () => {
 
 canvas.style.position = 'absolute';
 canvas.style.zIndex = 1;
-canvas.width = width / 2;
+canvas.width = 300;
 canvas.height = 100;
 container.append(renderer.domElement)
 renderer.render(scene, camera)
