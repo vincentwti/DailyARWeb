@@ -186,7 +186,7 @@ function displayInterface() {
   function init() {
     webcamCanvas = document.getElementById('video_canvas');
     webcamCanvas.background = new THREE.Color('grey');
-    webcamTexture = new THREE.Texture(video);
+    webcamTexture = new THREE.Texture(webcamCanvas);
     webcamTexture.wrapS = webcamTexture.wrapT = THREE.RepeatWrapping;
 
     webcamTexture.minFilter = THREE.LinearFilter;
