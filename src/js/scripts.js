@@ -17,7 +17,7 @@ let height = window.innerHeight;
 let targetDistance;
 let score = 0;
 
-scene.background = new THREE.Color(0x262626);
+//scene.background = new THREE.Color('transparent');
 camera.position.set(0, 0, 2);
 
 const color = 0xFFFFFF;
@@ -114,7 +114,7 @@ function click(event){
     score = Math.round(100 - targetDistance * 50);
     if(score === 100)
     {
-      score -= 0.41;
+      score -= 0.401;
     }
   }
   isPaused = !isPaused
