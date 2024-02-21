@@ -17,7 +17,7 @@ let height = window.innerHeight;
 let targetDistance;
 let score = 0;
 
-//scene.background = new THREE.Color('transparent');
+scene.background = new THREE.Color(0x262626);
 camera.position.set(0, 0, 2);
 
 const color = 0xFFFFFF;
@@ -31,11 +31,13 @@ const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.domElement.style.cssFloat = "right";
 
 //document.body.appendChild( renderer.domElement );
 const container = document.querySelector('#threejs-container');
 const canvas = document.createElement('canvas');
+let webcamCanvas = null;
 let context = canvas.getContext('2d');
 
 
@@ -64,11 +66,11 @@ let scoreTexture = null;
 let scoreMaterial = null;
 
 //document.body.appendChild(canvas);
-
+init();
 displayInterface();
 createScoreMesh();
-deviceCamera();
 render();
+initWebcam();
 
 function createScoreMesh() {
   scoreTexture = new THREE.Texture(canvas);
@@ -114,7 +116,7 @@ function click(event){
     score = Math.round(100 - targetDistance * 50);
     if(score === 100)
     {
-      score -= 0.401;
+      score -= 0.41;
     }
   }
   isPaused = !isPaused
@@ -154,15 +156,43 @@ function displayInterface() {
   context.fillText('Score : ' + score, canvas.width / 2, canvas.height / 2);
 }
 
-function deviceCamera() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-  .then(stream => {
-      const video = document.getElementById('webcam-video');
-      video.srcObject = stream;
-  })
-  .catch(error => {
-      console.error('Error accessing webcam:', error);
-      // Handle error appropriately, e.g., display a message to the user
-  });
+// function deviceCamera() {
+//   navigator.mediaDevices.getUserMedia({ video: true })
+//   .then(stream => {
+//       const video = document.getElementById('webcam-video');
+//       video.srcObject = stream;
+//   })
+//   .catch(error => {
+//       console.error('Error accessing webcam:', error);
+//       // Handle error appropriately, e.g., display a message to the user
+//   });
 
-}
+  function initWebcam() {
+
+    const video = document.getElementById('video');
+    webcamCanvas = document.getElementById('video_canvas');
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(function(stream) {
+          video.srcObject = stream;
+          video.play();
+      })
+      .catch(function(err) {
+          console.log("An error occured! " + err);
+      });
+  }
+
+  function init() {
+    const videoTexture = new THREE.Texture(webcamCanvas);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
+    const movieGeometry = new THREE.PlaneGeometry(3, 3, 3);
+    const movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, side:THREE.DoubleSide } );
+    const movieMesh = new THREE.Mesh(movieGeometry, movieMaterial); 
+    scene.add(movieMesh);
+    //renderer = new THREE.WebGLRenderer();
+    //renderer.setSize( window.innerWidth, window.innerHeight);
+    //renderer.domElement.style.cssFloat = "right";
+    //document.body.appendChild( renderer.domElement );
+  
+    }
