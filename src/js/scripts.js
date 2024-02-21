@@ -169,7 +169,6 @@ function displayInterface() {
 
   function initWebcam() {
     const video = document.getElementById('video');
-   
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       .then(function(stream) {
           video.srcObject = stream;
@@ -182,6 +181,7 @@ function displayInterface() {
 
   function init() {
     webcamCanvas = document.getElementById('video_canvas');
+    webcamCanvas.background = new THREE.Color('grey');
     const videoTexture = new THREE.Texture(webcamCanvas);
     videoTexture.minFilter = THREE.LinearFilter;
     videoTexture.magFilter = THREE.LinearFilter;
