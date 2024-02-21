@@ -43,7 +43,8 @@
 <body>
   
   <div id="threejs-container">
-    <video id="video" width="320" height="240" style="float:left;">Video stream not available.</video>
+    <video id="video" autoplay playsinline muted>Video stream not available.</video>
+    <!-- <video id="webcam-video" autoplay playsinline muted></video> -->
     <canvas id="video_canvas" width="320" height="240" style=" float:left;"></canvas>
   </div>
   <!-- <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
