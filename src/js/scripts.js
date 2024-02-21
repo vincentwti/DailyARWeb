@@ -73,7 +73,7 @@ render();
 initWebcam();
 
 function createScoreMesh() {
-  scoreTexture = new THREE.Texture(canvas);
+  scoreTexture = new THREE.Texture(webcamCanvas);
   scoreTexture.wrapS = scoreTexture.wrapT = THREE.RepeatWrapping;
   scoreMaterial = new THREE.MeshBasicMaterial({
     color: 'white',
@@ -147,7 +147,7 @@ function displayInterface() {
   let fontSize = 42 + (score > 90 ? (score / 5) : 0);
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.font = fontSize + 'px sans-serif';
-  context.fillStyle = 'transparent';
+  context.fillStyle = 'yellow';
 
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'white'
@@ -169,6 +169,7 @@ function displayInterface() {
 
   function initWebcam() {
     const video = document.getElementById('video');
+
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       .then(function(stream) {
           video.srcObject = stream;
@@ -182,9 +183,9 @@ function displayInterface() {
   function init() {
     webcamCanvas = document.getElementById('video_canvas');
     webcamCanvas.background = new THREE.Color('grey');
-    const videoTexture = new THREE.Texture(webcamCanvas);
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
+    const videoTexture = new THREE.Texture(canvas);
+    // videoTexture.minFilter = THREE.LinearFilter;
+    // videoTexture.magFilter = THREE.LinearFilter;
     videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
     const movieGeometry = new THREE.PlaneGeometry(3, 3, 3);
     const movieMaterial = new THREE.MeshBasicMaterial( {
