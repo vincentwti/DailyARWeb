@@ -73,7 +73,7 @@ render();
 initWebcam();
 
 function createScoreMesh() {
-  scoreTexture = new THREE.Texture(webcamCanvas);
+  scoreTexture = new THREE.Texture(canvas);
   scoreTexture.wrapS = scoreTexture.wrapT = THREE.RepeatWrapping;
   scoreMaterial = new THREE.MeshBasicMaterial({
     color: 'white',
@@ -147,7 +147,7 @@ function displayInterface() {
   let fontSize = 42 + (score > 90 ? (score / 5) : 0);
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.font = fontSize + 'px sans-serif';
-  context.fillStyle = 'yellow';
+  context.fillStyle = 'transparent';
 
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'white'
@@ -183,19 +183,23 @@ function displayInterface() {
   function init() {
     webcamCanvas = document.getElementById('video_canvas');
     webcamCanvas.background = new THREE.Color('grey');
-    const videoTexture = new THREE.Texture(canvas);
-    // videoTexture.minFilter = THREE.LinearFilter;
-    // videoTexture.magFilter = THREE.LinearFilter;
-    videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
+    webcamCanvas.zIndex = -1;
+    let videoTexture = new THREE.Texture(webcamCanvas);
+    //videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
+
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+
     const movieGeometry = new THREE.PlaneGeometry(3, 3, 3);
     const movieMaterial = new THREE.MeshBasicMaterial( {
-      map: videoTexture,
-      color: 'white',
+      color: 'grey',
+      map: scoreTexture,
       opacity: 1,
-      transparent: false,
+      transparent: true,
       side: THREE.DoubleSide,
     } );
-    const movieMesh = new THREE.Mesh(movieGeometry, movieMaterial); 
+    const movieMesh = new THREE.Mesh(movieGeometry, movieMaterial);
+    movieMesh.position.z = -1;
     scene.add(movieMesh);
     //renderer = new THREE.WebGLRenderer();
     //renderer.setSize( window.innerWidth, window.innerHeight);
