@@ -65,6 +65,8 @@ let scoreMesh = null;
 let scoreTexture = null;
 let scoreMaterial = null;
 
+let webcamTexture = null;
+
 //document.body.appendChild(canvas);
 displayInterface();
 createScoreMesh();
@@ -95,6 +97,7 @@ function render() {
   }, 1000 / fps );
 
   scoreTexture.needsUpdate = true;
+  webcamTexture.needsUpdate = true;
   displayInterface();
   renderer.render( scene, camera );
   if(!isPaused)
@@ -183,18 +186,18 @@ function displayInterface() {
   function init() {
     webcamCanvas = document.getElementById('video_canvas');
     webcamCanvas.background = new THREE.Color('grey');
-    let videoTexture = new THREE.Texture(webcamCanvas);
-    videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
+    webcamTexture = new THREE.Texture(video);
+    webcamTexture.wrapS = webcamTexture.wrapT = THREE.RepeatWrapping;
 
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
+    webcamTexture.minFilter = THREE.LinearFilter;
+    webcamTexture.magFilter = THREE.LinearFilter;
 
     const movieGeometry = new THREE.PlaneGeometry(1, 1, 1);
     const movieMaterial = new THREE.MeshBasicMaterial( {
       color: 'white',
-      map: videoTexture,
+      map: webcamTexture,
       opacity: 1,
-      transparent: true,
+      transparent: false,
       side: THREE.DoubleSide,
     } );
     const movieMesh = new THREE.Mesh(movieGeometry, movieMaterial);
