@@ -168,9 +168,8 @@ function displayInterface() {
 //   });
 
   function initWebcam() {
-
     const video = document.getElementById('video');
-    webcamCanvas = document.getElementById('video_canvas');
+   
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       .then(function(stream) {
           video.srcObject = stream;
@@ -182,12 +181,19 @@ function displayInterface() {
   }
 
   function init() {
+    webcamCanvas = document.getElementById('video_canvas');
     const videoTexture = new THREE.Texture(webcamCanvas);
     videoTexture.minFilter = THREE.LinearFilter;
     videoTexture.magFilter = THREE.LinearFilter;
     videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
     const movieGeometry = new THREE.PlaneGeometry(3, 3, 3);
-    const movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, side:THREE.DoubleSide } );
+    const movieMaterial = new THREE.MeshBasicMaterial( {
+      map: videoTexture,
+      color: 'white',
+      opacity: 1,
+      transparent: false,
+      side: THREE.DoubleSide,
+    } );
     const movieMesh = new THREE.Mesh(movieGeometry, movieMaterial); 
     scene.add(movieMesh);
     //renderer = new THREE.WebGLRenderer();
