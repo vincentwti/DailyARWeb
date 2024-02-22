@@ -84,7 +84,7 @@ function createScoreMesh() {
     transparent: true,
     side: THREE.DoubleSide,
   });
-
+  
   const scoreGeometry = new THREE.PlaneGeometry(1, 0.5, 1 );
   scoreMesh = new THREE.Mesh(scoreGeometry, scoreMaterial);
   scoreMesh.position.set(0, 1, 0);
@@ -100,6 +100,7 @@ function render() {
   webcamTexture.needsUpdate = true;
   displayInterface();
   renderer.render( scene, camera );
+
   if(!isPaused)
   {
     targetObj.position.x +=  targetSpeed;
@@ -186,7 +187,7 @@ function displayInterface() {
   function init() {
     webcamCanvas = document.getElementById('video');
     webcamCanvas.background = new THREE.Color('grey');
-    webcamTexture = new THREE.Texture(webcamCanvas);
+    webcamTexture = new THREE.VideoTexture(webcamCanvas);
     webcamTexture.colorSpace = THREE.SRGBColorSpace;
 
     webcamTexture.minFilter = THREE.LinearFilter;
