@@ -193,7 +193,7 @@ function displayInterface() {
     webcamTexture.minFilter = THREE.LinearFilter;
     webcamTexture.magFilter = THREE.LinearFilter;
 
-    const movieGeometry = new THREE.PlaneGeometry(7, 7, 1);
+    const movieGeometry = new THREE.PlaneGeometry(6, 6, 1);
     const movieMaterial = new THREE.MeshBasicMaterial( {
       color: 'white',
       map: webcamTexture,
