@@ -174,7 +174,9 @@ function displayInterface() {
   function initWebcam() {
     const video = document.getElementById('video');
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    navigator.mediaDevices.getUserMedia({ video: {
+      facingMode: 'environment'
+    }, audio: false })
       .then(function(stream) {
           video.srcObject = stream;
           video.play();
@@ -193,7 +195,7 @@ function displayInterface() {
     webcamTexture.minFilter = THREE.LinearFilter;
     webcamTexture.magFilter = THREE.LinearFilter;
 
-    const movieGeometry = new THREE.PlaneGeometry(6, 6, 1);
+    const movieGeometry = new THREE.PlaneGeometry(4, 6, 1);
     const movieMaterial = new THREE.MeshBasicMaterial( {
       color: 'white',
       map: webcamTexture,
