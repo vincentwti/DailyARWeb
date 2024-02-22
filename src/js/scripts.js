@@ -17,7 +17,7 @@ let height = window.innerHeight;
 let targetDistance;
 let score = 0;
 
-scene.background = new THREE.Color('transparent');
+scene.background = new THREE.Color('grey');
 camera.position.set(0, 0, 2);
 
 const color = 0xFFFFFF;
@@ -184,8 +184,8 @@ function displayInterface() {
   }
 
   function init() {
-    webcamCanvas = document.getElementById('video_canvas');
-    webcamCanvas.background = new THREE.Color('transparent');
+    webcamCanvas = document.getElementById('video');
+    webcamCanvas.background = new THREE.Color('grey');
     webcamTexture = new THREE.Texture(webcamCanvas);
     webcamTexture.wrapS = webcamTexture.wrapT = THREE.RepeatWrapping;
 
