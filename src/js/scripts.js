@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 //import {MindARThree} from 'mind-ar/dist/mindar-image-three.prod.js';
 
 const gui = new dat.GUI()
@@ -16,6 +17,10 @@ let width = window.innerWidth;
 let height = window.innerHeight;
 let targetDistance;
 let score = 0;
+let isResultScreenShown = false;
+
+let itemParent = null;
+let items = [];
 
 scene.background = new THREE.Color('grey');
 camera.position.set(0, 0, 2);
@@ -25,9 +30,17 @@ const intensity = 1;
 const light = new THREE.AmbientLight(color, intensity);
 scene.add(light);
 
+const pointLight = new THREE.PointLight(color, intensity, 10);
+pointLight.position.x = 0.1;
+pointLight.position.y = -0.5;
+pointLight.position.z = -0.2;
+scene.add(pointLight);
+
 const planeWidth = 1;
 const planeHeight = 1;
 const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+const resultPanelGeometry = new THREE.PlaneGeometry(1.5, 1.9);
+let resultPanelMesh = null;
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -70,9 +83,10 @@ let webcamTexture = null;
 //document.body.appendChild(canvas);
 displayInterface();
 createScoreMesh();
-init();
 initWebcam();
+init();
 render();
+
 
 function createScoreMesh() {
   scoreTexture = new THREE.Texture(canvas);
@@ -87,8 +101,9 @@ function createScoreMesh() {
   
   const scoreGeometry = new THREE.PlaneGeometry(1, 0.5, 1 );
   scoreMesh = new THREE.Mesh(scoreGeometry, scoreMaterial);
-  scoreMesh.position.set(0, 1, 0);
+  scoreMesh.position.set(0, -0.65, 0.2);
   scene.add(scoreMesh);
+  scoreMesh.parent = resultPanelMesh;
 }
 
 function render() {
@@ -99,6 +114,7 @@ function render() {
   scoreTexture.needsUpdate = true;
   webcamTexture.needsUpdate = true;
   displayInterface();
+  rotateItem();
   renderer.render( scene, camera );
 
   if(!isPaused)
@@ -110,8 +126,47 @@ function render() {
     }
   }
 }
-  
+
+function rotateItem() {
+  if(itemParent !== null)
+  {
+    itemParent.rotation.y += 0.01;
+  }
+  else
+  {
+    console.log("parent not null");
+  }
+}
+
+function showResultScreen() {
+  resultPanelMesh.visible = true;
+  itemParent.visible = true;
+  scoreMesh.visible = true;
+  for(let i = 0; i < items.length; i++)
+  {
+    items[i].visible = true;
+  }
+  isResultScreenShown = true;
+}
+
+function hideResultScreen() {
+  resultPanelMesh.visible = false;
+  itemParent.visible = false;
+  scoreMesh.visible = false;
+  for(let i = 0; i < items.length; i++)
+  {
+
+    items[i].visible = false;
+  }
+  isResultScreenShown = false;
+}
+
 function click(event){
+  if(isResultScreenShown)
+  {
+    hideResultScreen();
+    return; 
+  }
   if(!isPaused)
   {
     tryCount += 1;
@@ -122,10 +177,10 @@ function click(event){
     {
       score -= 0.41;
     }
+    showResultScreen();
   }
   isPaused = !isPaused
 }
-
 
 function makeInstance(geometry, rotY, position, url) {
   const texture = loader.load(url, render);
@@ -148,16 +203,16 @@ function makeInstance(geometry, rotY, position, url) {
 }
 
 function displayInterface() {
-  let fontSize = 42 + (score > 90 ? (score / 5) : 0);
+  let fontSize = 80 + (score > 90 ? (score / 5) : 0);
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.font = fontSize + 'px sans-serif';
+  context.font = fontSize + 'px dunkin';
   context.fillStyle = 'transparent';
 
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'white'
   context.textAlign = 'center';
   context.textBaseline = 'middle';
-  context.fillText('Score : ' + score, canvas.width / 2, canvas.height / 2);
+  context.fillText(score, canvas.width / 2, canvas.height / 2);
 }
 
 // function deviceCamera() {
@@ -191,24 +246,58 @@ function displayInterface() {
     webcamCanvas.background = new THREE.Color('grey');
     webcamTexture = new THREE.VideoTexture(webcamCanvas);
     webcamTexture.colorSpace = THREE.SRGBColorSpace;
-
+    
     webcamTexture.minFilter = THREE.LinearFilter;
     webcamTexture.magFilter = THREE.LinearFilter;
-
+    
     const movieGeometry = new THREE.PlaneGeometry(4, 6, 1);
-    const movieMaterial = new THREE.MeshBasicMaterial( {
+    const movieMaterial = new THREE.MeshBasicMaterial({
       color: 'white',
       map: webcamTexture,
       opacity: 1,
       transparent: false,
-      side: THREE.DoubleSide,
-    } );
+      side: THREE.DoubleSide
+    });
     const movieMesh = new THREE.Mesh(movieGeometry, movieMaterial);
     movieMesh.position.z = -1;
     scene.add(movieMesh);
+    
     //renderer = new THREE.WebGLRenderer();
     //renderer.setSize( window.innerWidth, window.innerHeight);
     //renderer.domElement.style.cssFloat = "right";
     //document.body.appendChild( renderer.domElement );
-  
-    }
+    
+    const emptyGeometry = new THREE.EdgesGeometry();
+    const boxMaterial = new THREE.MeshBasicMaterial({
+      color: 'white',
+      opacity: 0,
+      transparent: true
+    });
+    itemParent = new THREE.Mesh(emptyGeometry, boxMaterial);
+    itemParent.position.z = 0.2;
+    scene.add(itemParent);
+    itemParent.parent = resultPanelMesh;
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load('Botol.glb', (gltf) => {
+      scene.add(gltf.scene);
+      gltf.scene.traverse((child) =>{
+        child.parent = itemParent;
+        child.scale.set(0.06, 0.06, 0.06);
+        child.position.y = -0.1;
+        items.push(child);
+        child.visible = false;
+      });
+    }, undefined, (err) => console.log('err : ' + err));
+    
+    const resultPanelTexture = loader.load('Result Panel.png', render)
+    const resultMaterial = new THREE.MeshBasicMaterial({
+      color: 'white',
+      map: resultPanelTexture,
+      opacity: 1,
+      transparent: true
+    });
+    resultPanelMesh = new THREE.Mesh(resultPanelGeometry, resultMaterial);
+    resultPanelMesh.position.z = 0.1;
+    scene.add(resultPanelMesh);
+    hideResultScreen();
+  }
