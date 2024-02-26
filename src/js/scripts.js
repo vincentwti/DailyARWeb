@@ -57,7 +57,7 @@ let context = canvas.getContext('2d');
 const outlineObj = makeInstance(geometry, 0, new THREE.Vector3(0, targetInitialPos.y, 0), 'images/CatOutline.png');
 const targetObj = makeInstance(geometry,  0, targetInitialPos, 'images/Cat.png');
 
-window.addEventListener('pointerdown', click);
+window.addEventListener('pointerdown', click, 'test');
 window.addEventListener('resize', () => {
   width = window.innerWidth
   height = window.innerHeight
@@ -162,6 +162,7 @@ function hideResultScreen() {
 }
 
 function click(event){
+  console.log(event.currentTarget.toString() + ' ' + event.pointerId);
   if(isResultScreenShown)
   {
     hideResultScreen();
